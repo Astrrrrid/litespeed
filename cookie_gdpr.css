@@ -1,0 +1,67 @@
+/* this is CSS comment */
+.easy_gdpr_banner {
+	font-family: Monospace; /*"Gill Sans", sans-serif;*/
+    background: #ff9999;
+    font-weight: bold;
+    font-size: 18px;
+    color: white;
+    position: fixed;
+    padding:20px;
+    padding-top: 30px;
+    padding-left: 35px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+    border-top-left-radius: 30% 30%;
+	border-top-right-radius: 30% 30%;
+}
+
+.gdpr_btn {
+	background: white;
+	color: #ED5565;
+	margin-left: 20px;
+	margin-top: 10px;
+	/*padding: 10px;*/
+	font-size: 14px;
+	border-radius: 20px;
+}
+.gdpr_btn:hover {
+  background-color: #F5F7FA;
+  font-weight: bold;
+}
+a:link {
+    color: #ffe680;
+    text-decoration: underline;
+}
+
+a:hover {
+	color: #ffff99;
+	text-decoration: underline;
+}
+
+a:visited{
+	color:white;
+	text-decoration: none;
+}
+
+
+
+/*@keyframes bubble-size {
+    0%, 75% {
+        width:var(--size, 4rem);
+        height:var(--size, 4rem);
+    }
+    100% {
+        width:0rem;
+        height:0rem;
+    }
+}
+@keyframes bubble-move {
+    0% {
+        bottom:-4rem;
+    }
+    100% {
+        bottom:var(--distance, 10rem);
+    }
+}*/

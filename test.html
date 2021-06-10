@@ -1,0 +1,60 @@
+
+<!--
+<link rel="stylesheet" href="https://eveningcloud.tk/wp-content/plugins/GDPR-yummy-cookie/cookie.css">
+-->
+<script src="https://eveningcloud.tk/wp-content/plugins/GDPR-yummy-cookie/jq.js"></script>
+
+<!--
+<script>
+
+// code here will run after page loaded (or called dom.ready)
+jQuery(document).ready(function($) {
+// $(function(){
+//	console.log("ready!");
+//});
+	// this is JS comment
+	// $('#easy_gdpr_btn2').click( abc );
+	$('#easy_gdpr_btn2').click( abc );
+	function abc(){
+		// 1st step
+		$('.easy_gdpr_banner').fadeOut();
+		// 2nd step: save cookie
+		easy_gdpr_setcookie( 'gdpr_yummy_cookie', 'accepted! cheers!', 14 );
+	}
+	function easy_gdpr_setcookie(cname, cvalue, exdays) {
+		console.log( 'gdpr_setcookie is called' );
+		var d = new Date();
+		d.setTime(d.getTime() + (exdays*24*60*60*1000));
+		var expires = "expires="+ d.toUTCString();
+		document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	}
+	// my_func_in_blahblah_file(); // <--- this is just to show why we need to jq.ready wrapper (@Alice)
+	$('#easy_gdpr_btn3').click( closeIt );
+	function closeIt(){
+		// 1st step
+		$('.easy_gdpr_banner').fadeOut();
+		// 2nd step: save cookie
+		easy_gdpr_setcookie( 'gdpr_yummy_cookie', 'GDPR rejected', 14 );
+	}
+	function easy_gdpr_setcookie(cname, cvalue, exdays) {
+		console.log( 'gdpr_setcookie is called' );
+		var d = new Date();
+		d.setTime(d.getTime() + (exdays*24*60*60*1000));
+		var expires = "expires="+ d.toUTCString();
+		document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	}
+
+});
+
+
+</script> -->
+<!-- this is HTML comment -->
+<!-- <script src='https://www.5ea.com/blahblah.func.js'></script> -->
+
+
+<div id="bubble"></div>
+<div class="easy_gdpr_banner" id="content">
+	<a href="https://gdpr.eu/" target="_blank">GDPR compliance</a>: Use our yummy cookies to ensure that we give you the best experience on our website!
+	<img src="https://emoji.gg/assets/emoji/BlobbleWobble.gif" width="35px" height="35px" alt="BlobbleWobble">
+	<button class="gdpr_btn" id="easy_gdpr_btn2" style="width:117px; height: 47px;">Okie Dokie~ I Accept</button>
+	<button class="gdpr_btn" id="easy_gdpr_btn3" style="width:100px; height: 47px;">Noooooo! Go Away!</button>
