@@ -124,7 +124,7 @@ if($seconds > 0):
 			<th scope="col"><?php echo __('Cron Name', 'litespeed-cache'); ?></th>
 			<th scope="col"><?php echo __('Run Frequency', 'litespeed-cache'); ?></th>
 			<th scope="col"><?php echo __( 'Status', 'litespeed-cache' ); ?></th>
-			<th scope="col"><?php echo __( 'Knob', 'litespeed-cache' ); ?></th>
+			<th scope="col"><?php echo __( 'Activate Cron', 'litespeed-cache' ); ?></th>
 			<th scope="col"><?php echo __( 'Running', 'litespeed-cache' ); ?></th>
 		</tr></thead>
 		<tbody>
@@ -162,30 +162,7 @@ if($seconds > 0):
 					<?php echo '<i class="litespeed-badge litespeed-bg-danger" data-balloon-pos="up" aria-label="' . __( 'Blacklisted', 'litespeed-cache' ) . '">' . ( $blacklisted ?: '-' ) . '</i> '; ?>
 				</td>
 				<td>
-					<?php $this->build_toggle( 'litespeed-crawler-'.$i,  ! $__crawler->get_active_opt($i) ); ?>
-
-					<script>
-						jQuery(document).ready(function() {
-							var btn = $("[data-litespeed_crawler_id = <?php echo 'litespeed-crawler-'.$i; ?>]");
-							var inp = $("[name = <?php echo 'litespeed-crawler-'.$i; ?>]");
-							btn.click(function(e) {
-							// $(btn).on('click', function( e ) {
-								// console.log( 'clicked....' );
-								// if (inp.val() == 1) {
-								//     inp.val(0);
-
-								//       // console.log('input value changed from T to F');
-								// } else{
-								//     inp.val(1);
-
-								//       // console.log('changed from F to T');
-								// }
-							    btn.toggleClass('litespeed-toggle-btn-default litespeed-toggleoff' ).toggleClass('litespeed-toggle-btn-primary' );
-							    // <?php// $__crawler->update_active_opt($i); ?>
-							    //console.log('kk');
-							});
-						});
-					</script>
+					<?php $this->build_toggle( 'litespeed-crawler-'.$i,  ! $__crawler->get_active_opt( $i ) ); ?>
 				</td>
 				<td>
 				<?php

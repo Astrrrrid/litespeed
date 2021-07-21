@@ -174,35 +174,27 @@ var _litespeed_dots ;
 		} ) ;
 
 
-		var knobs = $('.litespeed-toggle-div');
+		$('.litespeed-toggle-div').on( 'click', function( e ) {
+			var str_id = $( this ).attr( "data-litespeed_crawler_id" );
+			var num_id = Number( str_id.split('-').pop() );
+			$( this ).toggleClass( 'litespeed-toggle-btn-default litespeed-toggleoff litespeed-toggle-btn-primary' );
+			$.ajax({
+				url: litespeed_data.ajax_url_do_crawl,
+				dataType: 'json',
+				method: 'POST',
+				data:{
+					crawler_id: num_id,
+				},
+				beforeSend: function ( xhr ) {
+					xhr.setRequestHeader( 'X-WP-Nonce', litespeed_data.nonce ) ;
+				},
+				success: function( data){
+					console.log('litespeed-crawler-cron: ajax hit');
+				}
+			});
 
-		// for (let knob of knobs){
-		Array.from(knobs).forEach(function(knob, i){
-			// var knob = $('.litespeed-toggle-div');
-			// console.log(knob);
-			$(knob).on('click', function( e ) {
-			// knob.click(function(e) {
-				console.log("and then?");
-				// knob.toggleClass('litespeed-toggle-btn-default litespeed-toggleoff' ).toggleClass('litespeed-toggle-btn-primary' );
-				$.ajax({
-					url: litespeed_data.ajax_url_do_crawl,
-					dataType: 'json',
-					method: 'POST',
-					data:{
-						item_id: i,
-					},
-					beforeSend: function ( xhr ) {
-						xhr.setRequestHeader( 'X-WP-Nonce', litespeed_data.nonce ) ;
-					},
-					success: function( data){
-						$(knob).html(data);
-					}
-				}); //end ajax call
+		});
 
-			}); // end event handler
-
-		}); // end loop
-		// };
 
 		/**
 		 * Click only once
