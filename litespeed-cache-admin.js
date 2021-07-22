@@ -160,7 +160,6 @@ var _litespeed_dots ;
 		 * @since  3.0
 		 */
 		$( '#litespeed_get_ip' ).on( 'click', function( e ) {
-			console.log("and then?");
 			$.ajax( {
 				url: litespeed_data.ajax_url_getIP,
 				dataType: 'json',
@@ -173,13 +172,16 @@ var _litespeed_dots ;
 			} ) ;
 		} ) ;
 
-
+		/**
+		 * Activate or deactivate the crawler clicked
+		 * @since
+		 */
 		$('.litespeed-toggle-div').on( 'click', function( e ) {
 			var str_id = $( this ).attr( "data-litespeed_crawler_id" );
 			var num_id = Number( str_id.split('-').pop() );
 			$( this ).toggleClass( 'litespeed-toggle-btn-default litespeed-toggleoff litespeed-toggle-btn-primary' );
 			$.ajax({
-				url: litespeed_data.ajax_url_do_crawl,
+				url: litespeed_data.ajax_url_crawler_update,
 				dataType: 'json',
 				method: 'POST',
 				data:{
@@ -194,7 +196,6 @@ var _litespeed_dots ;
 			});
 
 		});
-
 
 		/**
 		 * Click only once
@@ -213,9 +214,6 @@ var _litespeed_dots ;
 /**
  * Plural handler
  */
-
-
-
 function litespeed_plural( $num, $txt )
 {
 	if ( $num > 1 ) return $num + ' ' + $txt + 's' ;

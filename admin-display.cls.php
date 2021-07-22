@@ -241,11 +241,11 @@ class Admin_Display extends Base {
 				$localize_data[ 'nonce' ] = wp_create_nonce( 'wp_rest' );
 			}
 
+			// Activate or deactivate a specific crawler
 			if ( $_GET[ 'page' ] == 'litespeed-crawler' ) {
-				$localize_data[ 'ajax_url_do_crawl' ] = function_exists( 'get_rest_url' ) ? get_rest_url( null, 'litespeed/v1/crawler_active' ) : '/';
+				$localize_data[ 'ajax_url_crawler_update' ] = function_exists( 'get_rest_url' ) ? get_rest_url( null, 'litespeed/v1/toggle_crawler_engagement' ) : '/';
 				$localize_data[ 'nonce' ] = wp_create_nonce( 'wp_rest' );
 			}
-
 
 		}
 
@@ -791,6 +791,32 @@ class Admin_Display extends Base {
 	 *
 	 * @since 1.7
 	 */
+	// public function build_toggle( $id, $checked = null, $title_on = null, $title_off = null ) {
+	// 	if ( $checked === null && $this->conf( $id, true ) ) {
+	// 		$checked = true;
+	// 	}
+
+	// 	if ( $title_on === null ) {
+	// 		$title_on = __( 'ON', 'litespeed-cache' );
+	// 		$title_off = __( 'OFF', 'litespeed-cache' );
+	// 	}
+
+	// 	$cls = $checked ? 'primary' : 'default litespeed-toggleoff';
+
+	// 	$this->enroll( $id );
+
+	// 	echo "<div class='litespeed-toggle litespeed-toggle-btn litespeed-toggle-btn-$cls' data-litespeed-toggle-on='primary' data-litespeed-toggle-off='default'>
+	// 			<input name='$id' type='hidden' value='$checked' />
+	// 			<div class='litespeed-toggle-group'>
+	// 				<label class='litespeed-toggle-btn litespeed-toggle-btn-primary litespeed-toggle-on'>$title_on</label>
+	// 				<label class='litespeed-toggle-btn litespeed-toggle-btn-default litespeed-toggle-active litespeed-toggle-off'>$title_off</label>
+	// 				<span class='litespeed-toggle-handle litespeed-toggle-btn litespeed-toggle-btn-default'></span>
+	// 			</div>
+	// 		</div>";
+
+	// 	$this->_check_overwritten( $id );
+	// }
+
 	public function build_toggle( $id, $checked = null, $title_on = null, $title_off = null ) {
 		if ( $checked === null && $this->conf( $id, true ) ) {
 			$checked = true;

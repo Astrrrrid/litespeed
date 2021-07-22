@@ -1,8 +1,7 @@
 <?php
-
 namespace LiteSpeed;
 defined( 'WPINC' ) || exit;
-//self::update_option( "string", "abc" );
+
 $__crawler = Crawler::cls();
 $crawler_list = $__crawler->list_crawlers();
 
@@ -116,7 +115,6 @@ if($seconds > 0):
 		?>
 	</p>
 
-	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 
 	<table class="wp-list-table widefat striped">
 		<thead><tr >
@@ -162,7 +160,7 @@ if($seconds > 0):
 					<?php echo '<i class="litespeed-badge litespeed-bg-danger" data-balloon-pos="up" aria-label="' . __( 'Blacklisted', 'litespeed-cache' ) . '">' . ( $blacklisted ?: '-' ) . '</i> '; ?>
 				</td>
 				<td>
-					<?php $this->build_toggle( 'litespeed-crawler-'.$i,  ! $__crawler->get_active_opt( $i ) ); ?>
+					<?php $this->build_toggle( 'litespeed-crawler-'.$i ,  $__crawler->_is_active( $i ) ); ?>
 				</td>
 				<td>
 				<?php
@@ -223,5 +221,3 @@ if($seconds > 0):
 		<?php echo __('No crawler meta file generated yet', 'litespeed-cache'); ?>
 	</p>
 	<?php endif; ?>
-
-

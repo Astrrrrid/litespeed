@@ -39,12 +39,13 @@ class REST extends Root {
 			}
 		) );
 
-		// Update crawler cron activeness option
-		register_rest_route( 'litespeed/v1', '/crawler_active', array(
+		// Activate or deactivate a specific crawler
+		register_rest_route( 'litespeed/v1', '/toggle_crawler_engagement', array(
 			'methods' => 'POST',
-			'callback' => array( $this, 'crawler_active' ),
+			'callback' => array( $this, 'toggle_crawler_engagement' ),
 			'permission_callback'	=> '__return_true',
 		) );
+
 
 		// IP callback validate
 		register_rest_route( 'litespeed/v1', '/ip_validate', array(
@@ -77,6 +78,30 @@ class REST extends Root {
 			'permission_callback'	=> '__return_true',
 		) );
 
+		register_rest_route( 'litespeed/v1', '/notify_ccss', array(
+			'methods' => 'POST',
+			'callback' => array( $this, 'notify_ccss' ),
+			'permission_callback'	=> '__return_true',
+		) );
+
+		register_rest_route( 'litespeed/v1', '/notify_ucss', array(
+			'methods' => 'POST',
+			'callback' => array( $this, 'notify_ucss' ),
+			'permission_callback'	=> '__return_true',
+		) );
+
+		register_rest_route( 'litespeed/v1', '/notify_lqip', array(
+			'methods' => 'POST',
+			'callback' => array( $this, 'notify_lqip' ),
+			'permission_callback'	=> '__return_true',
+		) );
+
+		register_rest_route( 'litespeed/v1', '/notify_vpi', array(
+			'methods' => 'POST',
+			'callback' => array( $this, 'notify_vpi' ),
+			'permission_callback'	=> '__return_true',
+		) );
+
 		// Image optm notify_img
 		// Need validation
 		register_rest_route( 'litespeed/v1', '/notify_img', array(
@@ -100,17 +125,19 @@ class REST extends Root {
 	 *
 	 * @since  3.0.4
 	 */
-
-
-	public function crawler_active() {
-		Crawler::cls()->update_active_opt( $_POST[ 'crawler_id' ] );
-	}
-
-
-
 	public function token_get() {
 		return Cloud::ok();
 	}
+
+	/**
+	 * Activate or deactivate a crawler
+	 *
+	 * @since
+	 */
+	public function toggle_crawler_engagement() {
+		Crawler::cls()->update_active_opt( $_POST[ 'crawler_id' ] );
+	}
+
 
 	/**
 	 * Ping pong
@@ -155,6 +182,42 @@ class REST extends Root {
 	 */
 	public function apikey() {
 		return Cloud::cls()->save_apikey();
+	}
+
+	/**
+	 * Notify CCSS
+	 *
+	 * @since  4.2
+	 */
+	public function notify_ccss() {
+		return $this->cls( 'css' )->notify( 'ccss' );
+	}
+
+	/**
+	 * Notify UCSS
+	 *
+	 * @since  4.2
+	 */
+	public function notify_ucss() {
+		return $this->cls( 'css' )->notify( 'ucss' );
+	}
+
+	/**
+	 * Notify lqip
+	 *
+	 * @since  4.2
+	 */
+	public function notify_lqip() {
+		return $this->cls( 'placeholder' )->notify();
+	}
+
+	/**
+	 * Notify viewport images
+	 *
+	 * @since  4.2
+	 */
+	public function notify_vpi() {
+		return $this->cls( 'media' )->notify();
 	}
 
 	/**

@@ -24,7 +24,6 @@ class Crawler extends Root {
 	private $_resetfile;
 	private $_end_reason;
 
-
 	private $_crawler_conf = array(
 		'cookies' => array(),
 		'headers' => array(),
@@ -48,7 +47,6 @@ class Crawler extends Root {
 	 * @since    1.1.0
 	 */
 	public function __construct() {
-
 		if ( is_multisite() ) {
 			$this->_sitemeta = 'meta' . get_current_blog_id() . '.data';
 		}
@@ -60,24 +58,25 @@ class Crawler extends Root {
 		Debug2::debug( '🐞 Init' );
 	}
 
-	public function get_active_opt($curr){
-		$_idle_list = self::get_option('_idle_list', array());
-		return in_array($curr, $_idle_list);
+	public function _is_active( $curr ){
+		$_idle_list = self::get_option('_idle_list', array() );
+		return !in_array( $curr, $_idle_list );
 	}
 
 
-	public function update_active_opt($curr){
-		// error_log($curr, 3, "/var/www/myupdate.log"); // gottcha
-		$_idle_list = self::get_option('_idle_list', array());
-		if ( in_array($curr, $_idle_list)){ // when the ith opt was off / in the db list, turn it on / remove it from the list
-			$change = array((int)$curr);
-			$_idle_list = array_values(array_diff( $_idle_list , $change ));
+	public function update_active_opt( $curr ){ // param type: int
+		error_log($curr, 3, "/var/www/myupdate.log"); // gottcha
+		$_idle_list = self::get_option( '_idle_list' , array() );
+		if ( in_array( $curr, $_idle_list ) ){ // when the ith opt was off / in the db list, turn it on / remove it from the list
+			$change = array( (int)$curr );
+			$_idle_list = array_values( array_diff( $_idle_list , $change ) );
 			self::update_option( '_idle_list', $_idle_list );
 		} else {        	// when the ith opt was on / not in the db list, turn it off / add it to the list
-			array_push($_idle_list, (int)$curr);
+			array_push( $_idle_list, (int)$curr );
 			self::update_option( '_idle_list', $_idle_list );
 		}
 	}
+
 
 	/**
 	 * Overwride get_summary to init elements
@@ -167,10 +166,6 @@ class Crawler extends Root {
 	 */
 	private function _crawl_data( $force ) {
 		Debug2::debug( '🐞 ......crawler started......' );
-
-
-
-
 		// for the first time running
 		if ( ! $this->_summary || ! Data::cls()->tb_exist( 'crawler' ) || ! Data::cls()->tb_exist( 'crawler_blacklist' ) ) {
 			$this->cls( 'Crawler_Map' )->gen();
@@ -191,14 +186,19 @@ class Crawler extends Root {
 
 		$this->list_crawlers();
 
-		// foreach ( $this->list_crawlers() as $crawler )  {
-		for ( $num = 1; $num <= count($this->list_crawlers()); $num++){
-			if ( $this->get_active_opt( $this->_summary['curr_crawler'] +1 ) ) {
-				Debug2::debug( '🐞 Skipped the ' . $num . 'st crawler....' );
-				$this->_summary[ 'curr_crawler' ]++;
-
+		while ( !$this->_is_active( $this->_summary['curr_crawler'] )  && $this->_summary['curr_crawler'] < count( $this->list_crawlers() ) ) {
+			Debug2::debug( '🐞 Skipped the Crawler #' . $this->_summary['curr_crawler'] . ' ....' );
+			$this->_summary[ 'curr_crawler' ]++;
 			}
+		if ( $this->_summary[ 'curr_crawler' ] >= count( $this->list_crawlers() ) ) {
+			$this->_end_reason = 'end';
+			Debug2::debug( '🐞 all end, the current position is #' . $this->_summary['curr_crawler'] . ' .... resetting' );
+			$this->_terminate_running();
+			Debug2::debug( '🐞 check current position is #' . $this->_summary['curr_crawler'] . ' ' );
+			return;
 		}
+
+
 
 		// In case crawlers are all done but not reload, reload it
 		if ( empty( $this->_summary[ 'curr_crawler' ] ) || empty( $this->_crawlers[ $this->_summary[ 'curr_crawler' ] ] ) ) {
@@ -439,15 +439,6 @@ class Crawler extends Root {
 	 * @access private
 	 */
 	private function _do_running() {
-
-		// $this->list_crawlers();
-
-		// foreach ( $this->list_crawlers() as $crawler )  {
-		// 	if ( $this->get_active_opt( $this->_summary['curr_crawler'] +1 ) ) {
-		// 		$this->_summary[ 'curr_crawler' ]++;
-		// 	}
-		// }
-
 		$options = $this->_get_curl_options( true );
 
 		while ( $urlChunks = $this->cls( 'Crawler_Map' )->list_map( self::CHUNKS, $this->_summary['last_pos'] ) ) {
