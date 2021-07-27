@@ -122,7 +122,7 @@ if($seconds > 0):
 			<th scope="col"><?php echo __('Cron Name', 'litespeed-cache'); ?></th>
 			<th scope="col"><?php echo __('Run Frequency', 'litespeed-cache'); ?></th>
 			<th scope="col"><?php echo __( 'Status', 'litespeed-cache' ); ?></th>
-			<th scope="col"><?php echo __( 'Activate Cron', 'litespeed-cache' ); ?></th>
+			<th scope="col"><?php echo __( 'Activate', 'litespeed-cache' ); ?></th>
 			<th scope="col"><?php echo __( 'Running', 'litespeed-cache' ); ?></th>
 		</tr></thead>
 		<tbody>

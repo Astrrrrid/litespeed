@@ -46,6 +46,13 @@ class REST extends Root {
 			'permission_callback'	=> '__return_true',
 		) );
 
+		// Activate or deactivate a specific crawler
+		register_rest_route( 'litespeed/v1', '/toggle_crawler_engagement', array(
+			'methods' => 'GET',
+			'callback' => array( $this, 'toggle_crawler_engagement' ),
+			'permission_callback'	=> '__return_true',
+		) );
+
 
 		// IP callback validate
 		register_rest_route( 'litespeed/v1', '/ip_validate', array(
@@ -135,7 +142,17 @@ class REST extends Root {
 	 * @since
 	 */
 	public function toggle_crawler_engagement() {
-		Crawler::cls()->update_active_opt( $_POST[ 'crawler_id' ] );
+
+		error_log($_POST[ 'crawler_id' ], 3, '/var/www/myupdate.log');
+		// $crawler_id = 0;
+		Crawler::cls()->toggle_active( $_POST[ 'crawler_id' ] );
+		error_log('good', 3, '/var/www/myupdate.log');
+		if ( Crawler::cls()->_is_active( $_POST[ 'crawler_id' ] ) === true ) {
+			return 1;
+		} else {
+			return 0;
+		}
+
 	}
 
 

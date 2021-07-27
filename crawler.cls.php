@@ -58,22 +58,47 @@ class Crawler extends Root {
 		Debug2::debug( '🐞 Init' );
 	}
 
+	/**
+	 * Check whether the current crawler is active/runable/useable/ready to run or not
+	 *
+	 * @since  4.3
+	 */
 	public function _is_active( $curr ){
-		$_idle_list = self::get_option('_idle_list', array() );
-		return !in_array( $curr, $_idle_list );
+		// self::delete_option('bypass_list');
+		$bypass_list = self::get_option( 'bypass_list', array() );
+		return ! in_array( $curr, $bypass_list );
 	}
 
-
-	public function update_active_opt( $curr ){ // param type: int
-		error_log($curr, 3, "/var/www/myupdate.log"); // gottcha
-		$_idle_list = self::get_option( '_idle_list' , array() );
-		if ( in_array( $curr, $_idle_list ) ){ // when the ith opt was off / in the db list, turn it on / remove it from the list
+	/**
+	 * Toggle the current cralwer's activeness state, i.e., runable/useable/ready to run or not
+	 *
+	 * @since  4.3
+	 */
+	public function toggle_active0( $curr ) { // param type: int
+		// error_log($curr, 3, "/var/www/myupdate.log"); // gottcha
+		$bypass_list = self::get_option( 'bypass_list' , array() );
+		if ( in_array( $curr, $bypass_list ) ) { // when the ith opt was off / in the db list, turn it on / remove it from the list
 			$change = array( (int)$curr );
-			$_idle_list = array_values( array_diff( $_idle_list , $change ) );
-			self::update_option( '_idle_list', $_idle_list );
+			$bypass_list = array_values( array_diff( $bypass_list , $change ) );
+			self::update_option( 'bypass_list', $bypass_list );
 		} else {        	// when the ith opt was on / not in the db list, turn it off / add it to the list
-			array_push( $_idle_list, (int)$curr );
-			self::update_option( '_idle_list', $_idle_list );
+			array_push( $bypass_list, (int)$curr );
+			self::update_option( 'bypass_list', $bypass_list );
+		}
+	}
+
+	public function toggle_active( $curr ) { // param type: int
+		// error_log($curr, 3, "/var/www/myupdate.log"); // gottcha
+		$bypass_list = self::get_option( 'bypass_list' , array() );
+		if ( in_array( $curr, $bypass_list ) ) { // when the ith opt was off / in the db list, turn it on / remove it from the list
+			if ( ( $key = array_search( $curr, $bypass_list ) ) !== false ) {
+			    unset( $bypass_list[ $key ] );
+			}
+			$bypass_list = array_values( $bypass_list );
+			self::update_option( 'bypass_list', $bypass_list );
+		} else {        	// when the ith opt was on / not in the db list, turn it off / add it to the list
+			$bypass_list[] = ( int ) $curr;
+			self::update_option( 'bypass_list', $bypass_list );
 		}
 	}
 
@@ -186,15 +211,16 @@ class Crawler extends Root {
 
 		$this->list_crawlers();
 
-		while ( !$this->_is_active( $this->_summary['curr_crawler'] )  && $this->_summary['curr_crawler'] < count( $this->list_crawlers() ) ) {
+		while ( ! $this->_is_active( $this->_summary['curr_crawler'] )  && $this->_summary['curr_crawler'] < count( $this->_crawlers ) ) {
+			// Debug2::debug( '🐞    ......total: ' . count( $this->_crawlers ) . ' ....' );
 			Debug2::debug( '🐞 Skipped the Crawler #' . $this->_summary['curr_crawler'] . ' ....' );
 			$this->_summary[ 'curr_crawler' ]++;
 			}
-		if ( $this->_summary[ 'curr_crawler' ] >= count( $this->list_crawlers() ) ) {
+		if ( $this->_summary[ 'curr_crawler' ] >= count( $this->_crawlers ) ) {
 			$this->_end_reason = 'end';
-			Debug2::debug( '🐞 all end, the current position is #' . $this->_summary['curr_crawler'] . ' .... resetting' );
+			// Debug2::debug( '🐞 all end, the current position is #' . $this->_summary['curr_crawler'] . ' .... resetting' );
 			$this->_terminate_running();
-			Debug2::debug( '🐞 check current position is #' . $this->_summary['curr_crawler'] . ' ' );
+			// Debug2::debug( '🐞 check current position is #' . $this->_summary['curr_crawler'] . ' ' );
 			return;
 		}
 

@@ -177,23 +177,51 @@ var _litespeed_dots ;
 		 * @since
 		 */
 		$('.litespeed-toggle-div').on( 'click', function( e ) {
-			var str_id = $( this ).attr( "data-litespeed_crawler_id" );
-			var num_id = Number( str_id.split('-').pop() );
-			$( this ).toggleClass( 'litespeed-toggle-btn-default litespeed-toggleoff litespeed-toggle-btn-primary' );
+			var crawler_id = $( this ).attr( "data-litespeed_crawler_id" );
+			var crawler_id = Number( crawler_id.split('-').pop() );
+			var select = this;
+
 			$.ajax({
 				url: litespeed_data.ajax_url_crawler_update,
-				dataType: 'json',
+				dataType: 'json', // used to be json
 				method: 'POST',
-				data:{
-					crawler_id: num_id,
-				},
+				// cache: false,
+				data:{ 'crawler_id': crawler_id },
+				// data: JSON.stringify({ crawler_id: crawler_id }),
 				beforeSend: function ( xhr ) {
 					xhr.setRequestHeader( 'X-WP-Nonce', litespeed_data.nonce ) ;
 				},
 				success: function( data){
+					// $( select ).toggleClass( 'litespeed-toggle-btn-default litespeed-toggleoff litespeed-toggle-btn-primary' );
+					// alert(data);
+					console.log( typeof data,data);
+					// $('.litespeed-toggle-btn').html(data);
 					console.log('litespeed-crawler-cron: ajax hit');
+					if ( data === 1 ) {
+						$( select )[0].classList.replace( 'litespeed-toggle-btn-default' , 'litespeed-toggle-btn-primary' );
+						$( select )[0].classList.remove( 'litespeed-toggleoff' );
+					} else {
+						$( select )[0].classList.replace( 'litespeed-toggle-btn-primary' , 'litespeed-toggle-btn-default' );
+						$( select )[0].classList.add( 'litespeed-toggleoff' );
+					}
+				},
+				error: function(xhr, error){
+					console.log(xhr);
+      				console.log(error);
+					// console.log('data: ',data);
+				   console.log("Some message to display when the error happens");
+				   // alert(data);
 				}
-			});
+			})
+			.done(function() {
+			    // alert( "success" );
+			  })
+			  .fail(function() {
+			    // alert( "error" );
+			  })
+			  .always(function() {
+			    // alert( "complete" );
+			  });
 
 		});
 
