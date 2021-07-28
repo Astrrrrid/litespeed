@@ -192,12 +192,12 @@ var _litespeed_dots ;
 					},
 					success: function( data ) {
 						$( that ).toggleClass( 'litespeed-toggle-btn-default litespeed-toggleoff' , data == 0 ).toggleClass( 'litespeed-toggle-btn-primary' , data == 1 );
-						console.log( 'litespeed-crawler-cron: ajax hit' );
+						console.log( 'litespeed-crawler-ajax: change Activate option' );
 					},
 					error: function( xhr, error ) {
 						console.log( xhr );
 	      				console.log( error );
-						console.log( 'Some message to display when the error happens' );
+						console.log( 'litespeed-crawler-ajax: failed due to some error' );
 					}
 				} ) ;
 			} ) ;
