@@ -160,7 +160,7 @@ if($seconds > 0):
 					<?php echo '<i class="litespeed-badge litespeed-bg-danger" data-balloon-pos="up" aria-label="' . __( 'Blacklisted', 'litespeed-cache' ) . '">' . ( $blacklisted ?: '-' ) . '</i> '; ?>
 				</td>
 				<td>
-					<?php $this->build_toggle( 'litespeed-crawler-'.$i ,  $__crawler->_is_active( $i ) ); ?>
+					<?php $this->build_toggle( 'litespeed-crawler-'.$i ,  $__crawler->is_active( $i ) ); ?>
 				</td>
 				<td>
 				<?php

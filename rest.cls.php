@@ -39,17 +39,15 @@ class REST extends Root {
 			}
 		) );
 
-		// Activate or deactivate a specific crawler
-		register_rest_route( 'litespeed/v1', '/toggle_crawler_engagement', array(
+		// Activate or deactivate a specific crawler callback
+		register_rest_route( 'litespeed/v1', '/toggle_crawler_state', array(
 			'methods' => 'POST',
-			'callback' => array( $this, 'toggle_crawler_engagement' ),
+			'callback' => array( $this, 'toggle_crawler_state' ),
 			'permission_callback'	=> '__return_true',
 		) );
-
-		// Activate or deactivate a specific crawler
-		register_rest_route( 'litespeed/v1', '/toggle_crawler_engagement', array(
+		register_rest_route( 'litespeed/v1', '/toggle_crawler_state', array(
 			'methods' => 'GET',
-			'callback' => array( $this, 'toggle_crawler_engagement' ),
+			'callback' => array( $this, 'toggle_crawler_state' ),
 			'permission_callback'	=> '__return_true',
 		) );
 
@@ -137,22 +135,21 @@ class REST extends Root {
 	}
 
 	/**
-	 * Activate or deactivate a crawler
+	 * Call to freeze or melt the crawler clicked
 	 *
-	 * @since
+	 * @since  4.3
 	 */
-	public function toggle_crawler_engagement() {
-
-		error_log($_POST[ 'crawler_id' ], 3, '/var/www/myupdate.log');
-		// $crawler_id = 0;
-		Crawler::cls()->toggle_active( $_POST[ 'crawler_id' ] );
-		error_log('good', 3, '/var/www/myupdate.log');
-		if ( Crawler::cls()->_is_active( $_POST[ 'crawler_id' ] ) === true ) {
-			return 1;
-		} else {
-			return 0;
+	public function toggle_crawler_state() {
+		if( isset( $_POST['crawler_id'] ) ) {
+			error_log($_POST[ 'crawler_id' ], 3, '/var/www/myupdate.log');
+			Crawler::cls()->toggle_activeness( $_POST[ 'crawler_id' ] );
+			error_log( 'good', 3, '/var/www/myupdate.log');
+			if ( Crawler::cls()->is_active( $_POST[ 'crawler_id' ] ) === true ) {
+				return 1;
+			} else {
+				return 0;
+			}
 		}
-
 	}
 
 

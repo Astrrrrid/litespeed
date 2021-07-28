@@ -173,30 +173,25 @@ var _litespeed_dots ;
 		} ) ;
 
 		/**
-		 * Activate or deactivate the crawler clicked
-		 * @since
+		 * Freeze or melt a specific crawler
+		 * @since  4.3
 		 */
-		$('.litespeed-toggle-div').on( 'click', function( e ) {
+		$( '.litespeed-toggle' ).on( 'click', function( e ) {
 			var crawler_id = $( this ).attr( "data-litespeed_crawler_id" );
 			var crawler_id = Number( crawler_id.split('-').pop() );
 			var select = this;
-
-			$.ajax({
-				url: litespeed_data.ajax_url_crawler_update,
-				dataType: 'json', // used to be json
-				method: 'POST',
-				// cache: false,
-				data:{ 'crawler_id': crawler_id },
-				// data: JSON.stringify({ crawler_id: crawler_id }),
+			$.ajax( {
+				url: litespeed_data.ajax_url_crawler_switch,
+				dataType: 'json',
+				method: 'POST', // cache: false,
+				data:{ crawler_id: crawler_id },
 				beforeSend: function ( xhr ) {
 					xhr.setRequestHeader( 'X-WP-Nonce', litespeed_data.nonce ) ;
 				},
-				success: function( data){
+				success: function( data ) {
 					// $( select ).toggleClass( 'litespeed-toggle-btn-default litespeed-toggleoff litespeed-toggle-btn-primary' );
-					// alert(data);
 					console.log( typeof data,data);
-					// $('.litespeed-toggle-btn').html(data);
-					console.log('litespeed-crawler-cron: ajax hit');
+					console.log( 'litespeed-crawler-cron: ajax hit' );
 					if ( data === 1 ) {
 						$( select )[0].classList.replace( 'litespeed-toggle-btn-default' , 'litespeed-toggle-btn-primary' );
 						$( select )[0].classList.remove( 'litespeed-toggleoff' );
@@ -205,25 +200,13 @@ var _litespeed_dots ;
 						$( select )[0].classList.add( 'litespeed-toggleoff' );
 					}
 				},
-				error: function(xhr, error){
-					console.log(xhr);
-      				console.log(error);
-					// console.log('data: ',data);
-				   console.log("Some message to display when the error happens");
-				   // alert(data);
+				error: function( xhr, error ) {
+					console.log( xhr );
+      				console.log( error );
+					console.log( 'Some message to display when the error happens' );
 				}
-			})
-			.done(function() {
-			    // alert( "success" );
-			  })
-			  .fail(function() {
-			    // alert( "error" );
-			  })
-			  .always(function() {
-			    // alert( "complete" );
-			  });
-
-		});
+			} ) ;
+		} ) ;
 
 		/**
 		 * Click only once

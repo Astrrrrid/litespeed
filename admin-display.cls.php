@@ -243,7 +243,7 @@ class Admin_Display extends Base {
 
 			// Activate or deactivate a specific crawler
 			if ( $_GET[ 'page' ] == 'litespeed-crawler' ) {
-				$localize_data[ 'ajax_url_crawler_update' ] = function_exists( 'get_rest_url' ) ? get_rest_url( null, 'litespeed/v1/toggle_crawler_engagement' ) : '/';
+				$localize_data[ 'ajax_url_crawler_switch' ] = function_exists( 'get_rest_url' ) ? get_rest_url( null, 'litespeed/v1/toggle_crawler_state' ) : '/';
 				$localize_data[ 'nonce' ] = wp_create_nonce( 'wp_rest' );
 			}
 
@@ -826,7 +826,7 @@ class Admin_Display extends Base {
 			$title_off = __( 'OFF', 'litespeed-cache' );
 		}
 		$cls = $checked ? 'primary' : 'default litespeed-toggleoff';
-		echo "<div class='litespeed-toggle litespeed-toggle-btn litespeed-toggle-btn-$cls litespeed-toggle-div' data-litespeed-toggle-on='primary' data-litespeed-toggle-off='default' data-litespeed_crawler_id='$id' >
+		echo "<div class='litespeed-toggle litespeed-toggle-btn litespeed-toggle-btn-$cls' data-litespeed-toggle-on='primary' data-litespeed-toggle-off='default' data-litespeed_crawler_id='$id' >
 				<input name='$id' type='hidden' value='$checked' />
 				<div class='litespeed-toggle-group'>
 					<label class='litespeed-toggle-btn litespeed-toggle-btn-primary litespeed-toggle-on'>$title_on</label>

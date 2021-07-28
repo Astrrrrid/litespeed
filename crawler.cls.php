@@ -59,23 +59,22 @@ class Crawler extends Root {
 	}
 
 	/**
-	 * Check whether the current crawler is active/runable/useable/ready to run or not
+	 * Check whether the current crawler is active/runable/useable/ready to run/ want it to work or not
 	 *
 	 * @since  4.3
 	 */
-	public function _is_active( $curr ){
+	public function is_active( $curr ){
 		// self::delete_option('bypass_list');
 		$bypass_list = self::get_option( 'bypass_list', array() );
 		return ! in_array( $curr, $bypass_list );
 	}
 
 	/**
-	 * Toggle the current cralwer's activeness state, i.e., runable/useable/ready to run or not
+	 * Toggle the current cralwer's activeness state, i.e., runable/useable/ready to run/ want it to work or not
 	 *
 	 * @since  4.3
 	 */
 	public function toggle_active0( $curr ) { // param type: int
-		// error_log($curr, 3, "/var/www/myupdate.log"); // gottcha
 		$bypass_list = self::get_option( 'bypass_list' , array() );
 		if ( in_array( $curr, $bypass_list ) ) { // when the ith opt was off / in the db list, turn it on / remove it from the list
 			$change = array( (int)$curr );
@@ -87,8 +86,7 @@ class Crawler extends Root {
 		}
 	}
 
-	public function toggle_active( $curr ) { // param type: int
-		// error_log($curr, 3, "/var/www/myupdate.log"); // gottcha
+	public function toggle_activeness( $curr ) { // param type: int
 		$bypass_list = self::get_option( 'bypass_list' , array() );
 		if ( in_array( $curr, $bypass_list ) ) { // when the ith opt was off / in the db list, turn it on / remove it from the list
 			if ( ( $key = array_search( $curr, $bypass_list ) ) !== false ) {
@@ -100,6 +98,19 @@ class Crawler extends Root {
 			$bypass_list[] = ( int ) $curr;
 			self::update_option( 'bypass_list', $bypass_list );
 		}
+	}
+
+	/**
+	 * Reset bypass list
+	 *
+	 * @since  3.0
+	 * @access public
+	 */
+	public function clear_bypass_list() {
+		self::delete_option('bypass_list');
+		$msg = __( 'All crawlers you have enabled are set to active! ', 'litespeed-cache' );
+		Admin_Display::note( $msg );
+		Debug2::debug( '🐞 All crawlers are set to active...... ' );
 	}
 
 
@@ -210,10 +221,10 @@ class Crawler extends Root {
 		}
 
 		$this->list_crawlers();
-
-		while ( ! $this->_is_active( $this->_summary['curr_crawler'] )  && $this->_summary['curr_crawler'] < count( $this->_crawlers ) ) {
+		// Skip the crawlers that in bypass list
+		while ( ! $this->is_active( $this->_summary['curr_crawler'] )  && $this->_summary['curr_crawler'] < count( $this->_crawlers ) ) {
 			// Debug2::debug( '🐞    ......total: ' . count( $this->_crawlers ) . ' ....' );
-			Debug2::debug( '🐞 Skipped the Crawler #' . $this->_summary['curr_crawler'] . ' ....' );
+			Debug2::debug( '🐞 Skipped the Crawler #' . $this->_summary['curr_crawler'] . ' ......' );
 			$this->_summary[ 'curr_crawler' ]++;
 			}
 		if ( $this->_summary[ 'curr_crawler' ] >= count( $this->_crawlers ) ) {
