@@ -31,14 +31,6 @@ class REST extends Root {
 	 * @access public
 	 */
 	public function rest_api_init() {
-		register_rest_route( 'litespeed/v1', '/tool/check_ip', array(
-			'methods' => 'GET',
-			'callback' => array( $this, 'check_ip' ),
-			'permission_callback'	=> function() {
-				return current_user_can( 'manage_network_options' ) || current_user_can( 'manage_options' );
-			}
-		) );
-
 		// Activate or deactivate a specific crawler callback
 		register_rest_route( 'litespeed/v1', '/toggle_crawler_state', array(
 			'methods' => 'POST',
@@ -51,24 +43,31 @@ class REST extends Root {
 			'permission_callback'	=> '__return_true',
 		) );
 
+		register_rest_route( 'litespeed/v1', '/tool/check_ip', array(
+			'methods' => 'GET',
+			'callback' => array( $this, 'check_ip' ),
+			'permission_callback'	=> function() {
+				return current_user_can( 'manage_network_options' ) || current_user_can( 'manage_options' );
+			}
+		) );
 
 		// IP callback validate
 		register_rest_route( 'litespeed/v1', '/ip_validate', array(
 			'methods' => 'POST',
 			'callback' => array( $this, 'ip_validate' ),
-			'permission_callback'	=> '__return_true',
+			'permission_callback'	=> array( $this, 'is_from_cloud' ),
 		) );
 
 		// Token callback validate
 		register_rest_route( 'litespeed/v1', '/token', array(
 			'methods' => 'POST',
 			'callback' => array( $this, 'token' ),
-			'permission_callback'	=> '__return_true',
+			'permission_callback'	=> array( $this, 'is_from_cloud' ),
 		) );
 		register_rest_route( 'litespeed/v1', '/token', array(
 			'methods' => 'GET',
 			'callback' => array( $this, 'token_get' ),
-			'permission_callback'	=> '__return_true',
+			'permission_callback'	=> array( $this, 'is_from_cloud' ),
 		) );
 		register_rest_route( 'litespeed/v1', '/ping', array(
 			'methods' => 'GET',
@@ -80,31 +79,31 @@ class REST extends Root {
 		register_rest_route( 'litespeed/v1', '/apikey', array(
 			'methods' => 'POST',
 			'callback' => array( $this, 'apikey' ),
-			'permission_callback'	=> '__return_true',
+			'permission_callback'	=> array( $this, 'is_from_cloud' ),
 		) );
 
 		register_rest_route( 'litespeed/v1', '/notify_ccss', array(
 			'methods' => 'POST',
 			'callback' => array( $this, 'notify_ccss' ),
-			'permission_callback'	=> '__return_true',
+			'permission_callback'	=> array( $this, 'is_from_cloud' ),
 		) );
 
 		register_rest_route( 'litespeed/v1', '/notify_ucss', array(
 			'methods' => 'POST',
 			'callback' => array( $this, 'notify_ucss' ),
-			'permission_callback'	=> '__return_true',
+			'permission_callback'	=> array( $this, 'is_from_cloud' ),
 		) );
 
 		register_rest_route( 'litespeed/v1', '/notify_lqip', array(
 			'methods' => 'POST',
 			'callback' => array( $this, 'notify_lqip' ),
-			'permission_callback'	=> '__return_true',
+			'permission_callback'	=> array( $this, 'is_from_cloud' ),
 		) );
 
 		register_rest_route( 'litespeed/v1', '/notify_vpi', array(
 			'methods' => 'POST',
 			'callback' => array( $this, 'notify_vpi' ),
-			'permission_callback'	=> '__return_true',
+			'permission_callback'	=> array( $this, 'is_from_cloud' ),
 		) );
 
 		// Image optm notify_img
@@ -112,7 +111,7 @@ class REST extends Root {
 		register_rest_route( 'litespeed/v1', '/notify_img', array(
 			'methods' => 'POST',
 			'callback' => array( $this, 'notify_img' ),
-			'permission_callback'	=> '__return_true',
+			'permission_callback'	=> array( $this, 'is_from_cloud' ),
 		) );
 
 		// Image optm check_img
@@ -120,9 +119,29 @@ class REST extends Root {
 		register_rest_route( 'litespeed/v1', '/check_img', array(
 			'methods' => 'POST',
 			'callback' => array( $this, 'check_img' ),
-			'permission_callback'	=> '__return_true',
+			'permission_callback'	=> array( $this, 'is_from_cloud' ),
 		) );
 
+	}
+
+	/**
+	 * Call to freeze or melt the crawler clicked
+	 *
+	 * @since  4.3
+	 */
+	public function toggle_crawler_state() {
+		if( isset( $_POST[ 'crawler_id' ] ) ) {
+			return $this->cls( 'Crawler' )->toggle_activeness( $_POST[ 'crawler_id' ] ) ? 1 : 0;
+		}
+	}
+
+	/**
+	 * Check if the request is from cloud nodes
+	 *
+	 * @since 4.2
+	 */
+	public function is_from_cloud() {
+		return $this->cls( 'Cloud' )->is_from_cloud();
 	}
 
 	/**
@@ -133,25 +152,6 @@ class REST extends Root {
 	public function token_get() {
 		return Cloud::ok();
 	}
-
-	/**
-	 * Call to freeze or melt the crawler clicked
-	 *
-	 * @since  4.3
-	 */
-	public function toggle_crawler_state() {
-		if( isset( $_POST['crawler_id'] ) ) {
-			error_log($_POST[ 'crawler_id' ], 3, '/var/www/myupdate.log');
-			Crawler::cls()->toggle_activeness( $_POST[ 'crawler_id' ] );
-			error_log( 'good', 3, '/var/www/myupdate.log');
-			if ( Crawler::cls()->is_active( $_POST[ 'crawler_id' ] ) === true ) {
-				return 1;
-			} else {
-				return 0;
-			}
-		}
-	}
-
 
 	/**
 	 * Ping pong
@@ -177,7 +177,7 @@ class REST extends Root {
 	 * @since  3.0
 	 */
 	public function ip_validate() {
-		return Cloud::cls()->ip_validate();
+		return $this->cls( 'Cloud' )->ip_validate();
 	}
 
 	/**
@@ -186,7 +186,7 @@ class REST extends Root {
 	 * @since  3.0
 	 */
 	public function token() {
-		return Cloud::cls()->token_validate();
+		return $this->cls( 'Cloud' )->token_validate();
 	}
 
 	/**
@@ -195,7 +195,7 @@ class REST extends Root {
 	 * @since  3.0
 	 */
 	public function apikey() {
-		return Cloud::cls()->save_apikey();
+		return $this->cls( 'Cloud' )->save_apikey();
 	}
 
 	/**

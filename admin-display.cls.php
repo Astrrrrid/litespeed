@@ -246,7 +246,6 @@ class Admin_Display extends Base {
 				$localize_data[ 'ajax_url_crawler_switch' ] = function_exists( 'get_rest_url' ) ? get_rest_url( null, 'litespeed/v1/toggle_crawler_state' ) : '/';
 				$localize_data[ 'nonce' ] = wp_create_nonce( 'wp_rest' );
 			}
-
 		}
 
 		if ( $localize_data ) {
@@ -965,12 +964,12 @@ class Admin_Display extends Base {
 
 				$val = implode( "\n", $val );
 				$val = esc_textarea( $val );
-				$val = '<div class="litespeed-desc">' . __( 'Recommended value', 'litespeed-cache' ) . ':</div>' . "<textarea readonly rows='$rows' cols='$cols'>$val</textarea>";
+				$val = '<div class="litespeed-desc">' . __( 'Default value', 'litespeed-cache' ) . ':</div>' . "<textarea readonly rows='$rows' cols='$cols'>$val</textarea>";
 			}
 			else {
 				$val = esc_textarea( $val );
 				$val = "<code>$val</code>";
-				$val = __( 'Recommended value', 'litespeed-cache' ) . ': '.$val;
+				$val = __( 'Default value', 'litespeed-cache' ) . ': '.$val;
 			}
 			echo  $val;
 		}

@@ -176,37 +176,32 @@ var _litespeed_dots ;
 		 * Freeze or melt a specific crawler
 		 * @since  4.3
 		 */
-		$( '.litespeed-toggle' ).on( 'click', function( e ) {
-			var crawler_id = $( this ).attr( "data-litespeed_crawler_id" );
-			var crawler_id = Number( crawler_id.split('-').pop() );
-			var select = this;
-			$.ajax( {
-				url: litespeed_data.ajax_url_crawler_switch,
-				dataType: 'json',
-				method: 'POST', // cache: false,
-				data:{ crawler_id: crawler_id },
-				beforeSend: function ( xhr ) {
-					xhr.setRequestHeader( 'X-WP-Nonce', litespeed_data.nonce ) ;
-				},
-				success: function( data ) {
-					// $( select ).toggleClass( 'litespeed-toggle-btn-default litespeed-toggleoff litespeed-toggle-btn-primary' );
-					console.log( typeof data,data);
-					console.log( 'litespeed-crawler-cron: ajax hit' );
-					if ( data === 1 ) {
-						$( select )[0].classList.replace( 'litespeed-toggle-btn-default' , 'litespeed-toggle-btn-primary' );
-						$( select )[0].classList.remove( 'litespeed-toggleoff' );
-					} else {
-						$( select )[0].classList.replace( 'litespeed-toggle-btn-primary' , 'litespeed-toggle-btn-default' );
-						$( select )[0].classList.add( 'litespeed-toggleoff' );
+		if ( $( '.litespeed-toggle' ).length > 0 ) {
+			$( '.litespeed-toggle' ).on( 'click', function( e ) {
+				var crawler_id = $( this ).attr( "data-litespeed_crawler_id" );
+				var crawler_id = Number( crawler_id.split('-').pop() );
+				var that = this;
+				$.ajax( {
+					url: litespeed_data.ajax_url_crawler_switch,
+					dataType: 'json',
+					method: 'POST',
+					cache: false,
+					data:{ crawler_id: crawler_id },
+					beforeSend: function ( xhr ) {
+						xhr.setRequestHeader( 'X-WP-Nonce', litespeed_data.nonce ) ;
+					},
+					success: function( data ) {
+						$( that ).toggleClass( 'litespeed-toggle-btn-default litespeed-toggleoff' , data == 0 ).toggleClass( 'litespeed-toggle-btn-primary' , data == 1 );
+						console.log( 'litespeed-crawler-cron: ajax hit' );
+					},
+					error: function( xhr, error ) {
+						console.log( xhr );
+	      				console.log( error );
+						console.log( 'Some message to display when the error happens' );
 					}
-				},
-				error: function( xhr, error ) {
-					console.log( xhr );
-      				console.log( error );
-					console.log( 'Some message to display when the error happens' );
-				}
+				} ) ;
 			} ) ;
-		} ) ;
+		}
 
 		/**
 		 * Click only once

@@ -26,17 +26,16 @@ class Doc {
 	}
 
 	/**
-	 * Changes affect crawler list
+	 * Changes affect crawler list warning
 	 *
 	 * @since  4.3
 	 * @access public
 	 */
 	public static function crawler_affected() {
 		echo '<font class="litespeed-primary">';
-		echo '⚠️ ' . __( 'This setting will make change to the crawler list and its corresponding options.', 'litespeed-cache' );
+		echo '⚠️ ' . __( 'This setting will regenerate crawler list and clear the disable list!', 'litespeed-cache' );
 		echo '</font>';
 	}
-
 
 	/**
 	 * Learn more link
