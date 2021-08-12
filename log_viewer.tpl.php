@@ -33,13 +33,11 @@ if ( isset( $_GET[ 'log_type' ] ) ) {
 	?>
 	<div id='js-pointer' class='pointer'></div>
 </div>
-<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 <script>
 	const pointer = document.querySelector( '.pointer' );
 	var links = document.getElementsByClassName( 'tablinks' );
 	var tab_widths = [];
-	for( var i=0; i<links.length; i++ ){
+	for( var i = 0; i < links.length; i++ ){
 		var current = links[i];
 		tab_widths[i] = current.offsetWidth + 37;
 		// var ele_width = current.offsetWidth;
@@ -53,27 +51,26 @@ if ( isset( $_GET[ 'log_type' ] ) ) {
 		pointer.style.transform = "translate3d(" + order + ",0,0)";
 	}
 
-	// document.getElementsByClassName( 'nav-bar' ).addEventListener( 'mouseout', function( e ) {
-	// 	pointer.style.transform = "translate3d(" + order + ",0,0)";
-	// });
-
-
-
 	jQuery( document ).ready( function () {
-		$( "[ data-litespeed-layout = 'log_viewer' ]" ).css( 'position', 'relative' );
+		$( "[data-litespeed-layout='log_viewer']" ).css( 'position', 'relative' );
 		<?php
 			echo "$( \"[ data-litespeed_log_tab = '" . $log_type . "' ]\" ).css('color', '#1B9292');";
 			if ( $log_type === 'purge' ) {
+				$index = 2;
 				echo "pointer.style.transform = \"translate3d(\" + links[2].dataset.order + \",0,0)\";";
 				$file = LSCWP_CONTENT_DIR . '/debug.purge.log';
 			} else if ( $log_type === 'crawler' ) {
+				$index = 1;
 				echo "pointer.style.transform = \"translate3d(\" + links[1].dataset.order + \",0,0)\";";
 				$file = LSCWP_CONTENT_DIR . '/crawler.log';
 			} else {
-				// echo "$( \"[ data-litespeed_log_tab = 'debug' ]\" ).css('color', '#1b9292');";
+				$index = 0;
 				$file = LSCWP_CONTENT_DIR . '/debug.log';
 			}
 		?>
+		$( '.nav-bar' ).mouseout( function( ) {
+			pointer.style.transform = "translate3d(" + links[<?php echo $index; ?>].dataset.order + ",0,0)";
+		});
 	} ); // end jquery wraper
 </script>
 <?php
@@ -88,7 +85,7 @@ if ( isset( $_GET[ 'log_type' ] ) ) {
 	<?php echo __( 'Clear Log', 'litespeed-cache' ); ?>
 </a>
 <!-- <link rel="stylesheet/less" href="~/Downloads/Ferrous/wp-content/plugins/litespeed-cache/tpl/toolbox/navbar.scss" /> -->
-<style type="text/css">
+<style type= "text/css" >
 .position {
 	position: relative;
 }
