@@ -3,7 +3,7 @@ namespace LiteSpeed;
 defined( 'WPINC' ) || exit;
 $log_list = array(
 	'debug'	=> __( 'Debug Log', 'litespeed-cache' ),
-	'crawler'	=> __( 'Crawler Log', 'litespeed-cache' ),
+	'crawler'	=> __( 'Crrrrrrrrrrrrawler Log', 'litespeed-cache' ),
 	'purge'	=> __( 'Purge Log', 'litespeed-cache' ),
 );
 
@@ -18,7 +18,7 @@ if ( isset( $_GET[ 'log_type' ] ) ) {
 ?>
 
 <h3 class="litespeed-title">
-	<?php echo __($log_list[$log_type], 'litespeed-cache'); ?>
+	<?php echo $log_list[$log_type]; ?>
 	<?php Doc::learn_more( 'https://docs.litespeedtech.com/lscache/lscwp/toolbox/#log-view-tab' ); ?>
 	<a href="<?php echo Utility::build_url( Router::ACTION_DEBUG2, Debug2::TYPE_CLEAR_LOG ); ?>" class="button button-primary" litespeed-accesskey='D'>
 		<?php echo __( 'Clear Log', 'litespeed-cache' ); ?>
@@ -28,43 +28,48 @@ if ( isset( $_GET[ 'log_type' ] ) ) {
 	<?php
 		foreach ( $log_list as $tab => $val ) {
 			$str = admin_url( 'admin.php?page=litespeed-toolbox&log_type='.$tab.'#log_viewer');
-			echo "<a href=\"" . $str . "\" class='tablinks' data-litespeed_log_tab='$tab'>$val</a>";
+			echo "<a href=\"" . $str . "\" class='tablinks' id='litespeed-log-$tab' data-litespeed_log_tab='$tab'>$val</a>";
 		}
 	?>
 	<div id='js-pointer' class='pointer'></div>
 </div>
+
+
 <script>
 	const pointer = document.querySelector( '.pointer' );
 	var links = document.getElementsByClassName( 'tablinks' );
 	var tab_widths = [];
 	for( var i = 0; i < links.length; i++ ){
 		var current = links[i];
-		tab_widths[i] = current.offsetWidth + 37;
-		// var ele_width = current.offsetWidth;
-		current.dataset.order = i * 110 + "%";
+		tab_widths[i] = current.offsetWidth + 50;
+		current.dataset.order = i * 100 + "%";
 		current.addEventListener( "mouseover" , movePointer );
-		pointer.style.width = tab_widths[i] + 'px';
+		// pointer.style.width = tab_widths[i] + 'px';
 	}
 
 	function movePointer( e ) {
 		var order = e.currentTarget.dataset.order;
+		pointer.style.width = e.currentTarget.offsetWidth + 'px';
 		pointer.style.transform = "translate3d(" + order + ",0,0)";
 	}
 
-	jQuery( document ).ready( function () {
-		$( "[data-litespeed-layout='log_viewer']" ).css( 'position', 'relative' );
+	jQuery( document ).ready( function ( $ ) {
+		$("[data-litespeed-layout='log_viewer']").css( 'position', 'relative' );
 		<?php
 			echo "$( \"[ data-litespeed_log_tab = '" . $log_type . "' ]\" ).css('color', '#1B9292');";
 			if ( $log_type === 'purge' ) {
 				$index = 2;
 				echo "pointer.style.transform = \"translate3d(\" + links[2].dataset.order + \",0,0)\";";
+				echo "pointer.style.width = tab_widths[2] + 'px';";
 				$file = LSCWP_CONTENT_DIR . '/debug.purge.log';
 			} else if ( $log_type === 'crawler' ) {
 				$index = 1;
 				echo "pointer.style.transform = \"translate3d(\" + links[1].dataset.order + \",0,0)\";";
+				echo "pointer.style.width = tab_widths[1] + 'px';";
 				$file = LSCWP_CONTENT_DIR . '/crawler.log';
 			} else {
 				$index = 0;
+				echo "pointer.style.width = tab_widths[0] + 'px';";
 				$file = LSCWP_CONTENT_DIR . '/debug.log';
 			}
 		?>
@@ -86,6 +91,7 @@ if ( isset( $_GET[ 'log_type' ] ) ) {
 </a>
 <!-- <link rel="stylesheet/less" href="~/Downloads/Ferrous/wp-content/plugins/litespeed-cache/tpl/toolbox/navbar.scss" /> -->
 <style type= "text/css" >
+
 .position {
 	position: relative;
 }
@@ -144,8 +150,10 @@ a {
 }
 
 .pointer {
+	/*width: 95px;*/
 	z-index: 1;
 	margin-top: 0.3em;
+	/*margin-left: 0.4em;*/
 	margin-left: 0.2em;
 	top: 0.6em;
 	left: 1em;
