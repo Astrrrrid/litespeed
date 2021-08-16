@@ -36,66 +36,68 @@ if ( isset( $_GET[ 'log_type' ] ) ) {
 
 
 <script>
-	const pointer = document.querySelector( '.pointer' );
+	const pointer = document.querySelector( '.pointer' );  // the pointer w/ fixed width
 	var links = document.getElementsByClassName( 'tablinks' );
-	// var tab_widths = [];
 	for( var i = 0; i < links.length; i++ ){
 		var current = links[i];
-		// tab_widths[i] = current.offsetWidth + 50;
 		current.dataset.order = i * 113 + "%";
-		// current.dataset.order = i;
 		current.addEventListener( "mouseover" , movePointer );
-		// pointer.style.width = tab_widths[i] + 'px';
 	}
-
-	function movePointer( e ) {
-		var order = e.currentTarget.dataset.order;
-		console.log(order);
-		// pointer.style.width = e.currentTarget.offsetWidth + 'px';
-		// var width = pointer.style.width;
-		pointer.style.transform = "translate3d(" + order + ",0,0)";
-		// pointer.style.transform = "translate(" + tab_widths[order-1] + "px, 0)";
-	}
+	// var nav_bar = document.getElementsByClassName( 'nav-bar' )[0];
 
 	jQuery( document ).ready( function ( $ ) {
+		$(document).ready(movePointer);
 		$("[data-litespeed-layout='log_viewer']").css( 'position', 'relative' );
 		<?php
 			echo "$( \"[ data-litespeed_log_tab = '" . $log_type . "' ]\" ).css('color', '#1B9292');";
 			if ( $log_type === 'purge' ) {
 				$index = 2;
-				echo "pointer.style.transform = \"translate3d(\" + links[2].dataset.order + \",0,0)\";";
-				// echo "pointer.style.width = tab_widths[2] + 'px';";
+				// echo "pointer.style.transform = \"translate3d(\" + links[" . $index . "].dataset.order + \",0,0)\";";
+				// echo "movePointer()";
+				// $(document).movePointer()
 				$file = LSCWP_CONTENT_DIR . '/debug.purge.log';
 			} else if ( $log_type === 'crawler' ) {
 				$index = 1;
-				echo "pointer.style.transform = \"translate3d(\" + links[1].dataset.order + \",0,0)\";";
-				// echo "pointer.style.width = tab_widths[1] + 'px';";
+				// echo "pointer.style.transform = \"translate3d(\" + links[" . $index . "].dataset.order + \",0,0)\";";
 				$file = LSCWP_CONTENT_DIR . '/crawler.log';
 			} else {
 				$index = 0;
-				// echo "pointer.style.width = tab_widths[0] + 'px';";
 				$file = LSCWP_CONTENT_DIR . '/debug.log';
 			}
 		?>
-		$( '.nav-bar' ).mouseout( function( ) {
-			pointer.style.transform = "translate3d(" + links[<?php echo $index; ?>].dataset.order + ",0,0)";
-			console.log(links[<?php echo $index; ?>].dataset.order);
-		} );
+		// $( '.nav-bar' ).mouseout( function( ) {
+		// 	pointer.style.transform = "translate3d(" + links[<?php //echo $index; ?>].dataset.order + ",0,0)";
+		// 	// console.log(links[<?php //echo $index; ?>].dataset.order);
+		// } );
+
+		// $( '.nav-bar' ).mouseout( movePointer );
 
 	} ); // end jquery wraper
+
+	document.getElementsByClassName( 'nav-bar' )[0].addEventListener( 'mouseout' , movePointer );
+	let links_ary = Array.from(links);
+	function movePointer( e ) {
+		// var is_link = (element) => element == e.currentTarget;
+		// if ( links.some(is_link)==true ) {
+		// if ( e.currentTarget != nav_bar ) {
+		if ( links_ary.includes(e.currentTarget)  ) {
+			var order = e.currentTarget.dataset.order;
+		} else {
+			var order = links[<?php echo $index; ?>].dataset.order;
+		}
+		pointer.style.transform = "translate3d(" + order + ",0,0)";
+	}
 </script>
 <?php
 	$lines = File::count_lines( $file );
 	$start = $lines > 1000 ? $lines - 1000 : 0;
 	$logs = File::read( $file, $start );
 	$logs = $logs ? implode( "\n", $logs ) : '';
-
 	echo nl2br( htmlspecialchars( $logs ) );
 ?>
 <a href="<?php echo Utility::build_url( Router::ACTION_DEBUG2, Debug2::TYPE_CLEAR_LOG ); ?>" class="button button-primary">
 	<?php echo __( 'Clear Log', 'litespeed-cache' ); ?>
 </a>
-<!-- <link rel="stylesheet/less" href="~/Downloads/Ferrous/wp-content/plugins/litespeed-cache/tpl/toolbox/navbar.scss" /> -->
 <style type= "text/css" >
 
 .position {
