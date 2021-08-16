@@ -437,7 +437,7 @@ class Debug2 extends Root {
 			$log_type = $_GET['log_type'];
 			if ( $log_type != 'purge' ) {
 				File::save( LSCWP_CONTENT_DIR . '/' . $log_type . '.log', '' );
-			}
+			} //waaaaaaaaaawhaaaahhh
 		}
 		File::save( self::$log_path, '' );
 		File::save( LSCWP_CONTENT_DIR . '/debug.purge.log', '' );
